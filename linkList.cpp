@@ -62,7 +62,57 @@ public:
             head = new Node<T>(data);
         }
     }
+    
+    void sort (bool assending = true){
+        if (head == nullptr || head->next == nullptr)
+        return;
 
+    bool isSorted = false;
+
+    while (!isSorted)
+    {
+        isSorted = true;
+        Node<T>* prevNode = nullptr;
+        Node<T>* currNode = head;
+        Node<T>* nextNode = head->next;
+
+        while (nextNode != nullptr)
+        {
+            if (currNode->data > nextNode->data && assending == true)
+            {
+                currNode->next = nextNode->next;
+                nextNode->next = currNode;
+                if (prevNode == nullptr)
+                    head = nextNode;
+                else
+                    prevNode->next = nextNode;
+                prevNode = nextNode;
+                nextNode = currNode->next;
+                isSorted = false;
+            }else if (currNode->data < nextNode->data && assending == false)
+            {
+                currNode->next = nextNode->next;
+                nextNode->next = currNode;
+
+                if (prevNode == nullptr)
+                    head = nextNode;
+                else
+                    prevNode->next = nextNode;
+
+                prevNode = nextNode;
+                nextNode = currNode->next;
+                isSorted = false;
+            }
+            else
+            {
+                prevNode = currNode;
+                currNode = nextNode;
+                nextNode = nextNode->next;
+            }
+        }
+    }
+
+    }
     void update(T newData, T oldData)
     {
         if (head)

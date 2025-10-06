@@ -1,12 +1,13 @@
 #include <iostream>
-using namespace std;
 #include <type_traits>
+using namespace std;
 template <typename T>
-class StackInArray
+class QueueInArray
 {
     int size;
     T *data;
     int top = -1;
+    int rear = -1;
     T typeFunctionReturn()
     {
         if constexpr (is_pointer_v<T>)
@@ -28,50 +29,56 @@ class StackInArray
     }
 
 public:
-    StackInArray(int newSize)
+    QueueInArray(int newSize)
     {
         top = -1;
+        rear = -1;
         this->size = newSize;
         this->data = new T[size];
     }
 
     void push(T newValue)
     {
-        if (top >= size)
+        if (rear >= size)
             return;
-        this->data[++top] = newValue;
+        top = 0;
+        this->data[++rear] = newValue;
     }
     T pop()
     {
-        if (top == -1)
+        if (top == -1 || rear == -1)
         {
             return typeFunctionReturn();
         }
-        return this->data[top--];
+        T value = data[top];
+        for (int i = 0; i < rear; i++)
+        {
+            data[i] = data[i + 1];
+        }
+        rear--;
+        return value;
     }
     T peek()
     {
-        if (top == -1)
+        if (top == -1 || rear == -1)
             return typeFunctionReturn();
         return data[top];
     }
     bool isFull()
     {
-        return (size < top);
+        return (size < rear);
     }
     bool isEmpty()
     {
-        return (top == -1);
+        return (top == -1 || rear == -1);
     }
-    int getSize(){
-        return this->top;
-    }
+    int getSize() { return rear; }
 };
 
 template <typename T>
 class Node
 {
-    public:
+public:
     T data;
     Node *next;
     Node<T>(T newData, Node<T> *head = nullptr)
@@ -81,9 +88,10 @@ class Node
     }
 };
 template <typename T>
-class StackInList
+class QueueInList
 {
     Node<T> *top = nullptr;
+    Node<T> *rear = nullptr;
     int size = -1;
     T typeFunctionReturn()
     {
@@ -110,35 +118,49 @@ public:
     {
         size++;
         Node<T> *node = new Node<T>(newData);
-        node->next = top;
-        top = node;
+        if (top == nullptr && rear == nullptr)
+        {
+            top = node;
+            rear = node;
+        }
+        else if (top == rear && top != nullptr)
+        {
+            rear->next = node;
+            rear = node;
+        }
     }
     T pop()
     {
-        if (top == nullptr)
+        if (top == nullptr || rear == nullptr)
             return typeFunctionReturn();
         Node<T> *temp = top;
         top = top->next;
         temp->next = nullptr;
-        size++;
+        size--;
         return temp->data;
     }
-    T peek()
+    T front()
     {
         if (top == nullptr)
             return typeFunctionReturn();
         return top->data;
     }
-
+    T back()
+    {
+        if (rear == nullptr)
+            return typeFunctionReturn();
+        return rear->data;
+    }
+    int getSize()
+    {
+        return this->size;
+    }
     bool isFull()
     {
         return false;
     }
     bool isEmpty()
     {
-        return (top == nullptr);
-    }
-    int getSize(){
-        return this->size;
+        return (top == nullptr && rear == nullptr);
     }
 };

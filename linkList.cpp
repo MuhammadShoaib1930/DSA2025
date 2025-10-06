@@ -16,24 +16,25 @@ template <typename T>
 class LinkList
 {
     Node<T> *head;
-    int maxLenght;
+    int size;
 
 public:
     LinkList()
     {
         this->head = nullptr;
-        this->maxLenght = 0;
+        this->size = 0;
     }
     void insertALL(T *array, int n)
     {
         for (int i = 0; i < n; i++)
         {
             insertByRear(array[i]);
+            size++;
         }
     }
     void insertByFront(T data)
     {
-        maxLenght++;
+        size++;
         if (head)
         {
             Node<T> *temp = new Node<T>(data);
@@ -47,7 +48,7 @@ public:
     }
     void insertByRear(T data)
     {
-        maxLenght++;
+        size++;
         if (head)
         {
             Node<T> *temp = head;
@@ -173,22 +174,25 @@ public:
         }
     }
 
-    int getMaxLenght()
+    int getSize()
     {
-        return maxLenght;
+        return this.size;
     }
     bool isEmpty()
     {
-        return (maxLenght == 0);
+        return (size == 0);
     }
     void deleteNode(T data)
     {
-        if (!head)
+        if (!head){
+            size = 0;
             return;
+
+        }
         if (head->data == data)
         {
             head = head->next;
-            maxLenght--;
+            size--;
             return;
         }
         Node<T> *temp = head;
@@ -197,7 +201,7 @@ public:
             if (temp->next->data == data)
             {
                 temp->next = temp->next->next;
-                maxLenght--;
+                size--;
                 return;
             }
             temp = temp->next;
@@ -214,6 +218,7 @@ public:
     void deleteAll()
     {
         head = nullptr;
+        this->size = 0;
     }
     void insertByBefore(T newData, T where)
     {
@@ -222,6 +227,7 @@ public:
         {
             node->next = head;
             head = node;
+            size++;
             return;
         }
         Node<T> *temp = head;
@@ -231,6 +237,7 @@ public:
             {
                 node->next = temp->next;
                 temp->next = node;
+                size++;
                 return;
             }
             temp = temp->next;
@@ -246,6 +253,7 @@ public:
             {
                 node->next = temp->next;
                 temp->next = node;
+                size++;
                 return;
             }
 
@@ -256,13 +264,16 @@ public:
     {
         if (head)
         {
+            int count = 0;
             Node<T> *temp = head;
             while (temp)
             {
+                count++;
                 cout << temp->data << " ";
                 temp = temp->next;
             }
             cout << endl;
+            this->size = count;
         }
         else
         {

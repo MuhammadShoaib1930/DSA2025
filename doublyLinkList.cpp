@@ -22,9 +22,11 @@ class DoublyLinkList
 public:
     Node<T> *frontHead = nullptr;
     Node<T> *rearHead = nullptr;
+    int size = 0;
 
     void insertByFront(T data)
     {
+        size++;
         Node<T> *node = new Node<T>(data);
         if (frontHead == nullptr && rearHead == nullptr)
         {
@@ -40,6 +42,7 @@ public:
     }
     void insertByRear(T data)
     {
+        size++;
         Node<T> *node = new Node<T>(data);
         if (frontHead == nullptr && rearHead == nullptr)
         {
@@ -55,42 +58,64 @@ public:
     }
     void traversByFront()
     {
+        int count=0;
         Node<T> *temp = frontHead;
         while (temp != nullptr)
         {
+            count++;
             cout << temp->data << " ";
             temp = temp->right;
         }
         cout << endl;
+        this->size = count;
     }
     void traversByRear()
     {
         Node<T> *temp = rearHead;
+        int count = 0;
         while (temp != nullptr)
         {
+            count ++;
             cout << temp->data << " ";
             temp = temp->left;
         }
         cout << endl;
+        this->size = count;
     }
     void deleteAll()
     {
         frontHead = nullptr;
         rearHead = nullptr;
+        this->size= 0;
     }
     void deleteRear()
     {
+
+        if(rearHead == frontHead || rearHead == nullptr && frontHead == nullptr){
+            rearHead = nullptr;
+            frontHead = nullptr;
+            this->size = 0;
+            return;
+        }
         Node<T> *temp = rearHead;
         rearHead = temp->left;
         temp->left = nullptr;
         rearHead->right = nullptr;
+        size --;
     }
     void deleteFront()
     {
+        if(rearHead == frontHead || rearHead == nullptr && frontHead == nullptr){
+            rearHead = nullptr;
+            frontHead = nullptr;
+            this->size = 0;
+            return;
+        }
         Node<T> *temp = frontHead;
         frontHead = temp->right;
         frontHead->left = nullptr;
         temp->right = nullptr;
+        size--;
     }
     bool isPresent(T data)
     {
@@ -113,20 +138,6 @@ public:
     {
         return (rearHead == nullptr && frontHead == nullptr);
     }
-    int numberOfElement()
-    {
-        if (isEmpty())
-            return 0;
-        Node<T> *frontNode = frontHead;
-        Node<T> *rearNode = rearHead;
-        int number = 0;
-        while (frontNode != nullptr && rearHead != nullptr)
-        {
-            number = (frontNode == rearNode) ? number + 1 : number + 2;
-            frontNode = frontNode->right->right;
-        }
-        return number;
-    }
     void insertByValueAfter(T data, T where)
     {
         if (isEmpty())
@@ -137,6 +148,7 @@ public:
             rearHead->right = node;
             node->left = rearHead;
             rearHead = node;
+            size++;
             return;
         }
         Node<T> *nodeFront = frontHead;
@@ -149,6 +161,8 @@ public:
                 node->left = nodeFront;
                 node->right = rNode;
                 rNode->left = node;
+                size++;
+                return;
             }
             nodeFront = nodeFront->right;
         }
@@ -164,6 +178,7 @@ public:
             node->right = rNode;
             rNode->left = node;
             frontHead = node;
+            size++;
             return;
         }
         while (rNode != nullptr)
@@ -176,6 +191,7 @@ public:
                 node->left = lNode;
                 node->right = rNode;
                 rNode->left = node;
+                size++;
                 return;
             }
         }
@@ -188,11 +204,13 @@ public:
         {
             frontHead = frontHead->right;
             frontHead->left = nullptr;
+            size--;
         }
         else if (rearHead->data == data)
         {
             rearHead = rearHead->left;
             rearHead->right = nullptr;
+            size--;
         }
         else
         {
@@ -205,6 +223,7 @@ public:
                     rNode = rNode->right;
                     lNode->right = rNode;
                     rNode->left = lNode;
+                    size--;
                     return;
                 }
                 rNode = rNode->right;
@@ -237,5 +256,8 @@ public:
             }while(temp != rearHead);
             
         }
+    }
+    int getSize(){
+    return this->size;
     }
 };

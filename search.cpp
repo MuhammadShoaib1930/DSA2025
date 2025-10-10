@@ -46,7 +46,7 @@ public:
                 if (array[start] == value)
                     return start;
                 else
-                    break;
+                    return -1;
             }
 
             int mid = start + ((value - array[start]) * (end - start)) / (array[end] - array[start]);

@@ -16,36 +16,25 @@ public:
 class HashFunctions
 {
 public:
-    enum class hashFunctions
-    {
-        division,
-        multiplication,
-        midSquare,
-        folding,
-        universal
-    };
-    enum class colussionFunctions
-    {
-        seaprateChaning,
-        openHasing,
-        linearOpenAddressing,
-        quadraticOpenAddressing,
-        doubleOpenAdressing
-    };
     vector<Node *> table;
-    HashFunctions(int m = 0)
+    int hashFunctionSelected;
+    int clousisonSelected;
+    int size = table.size();
+    HashFunctions(int m = 0, int hash = 0, int clos = 0)
     {
-        table = vector<Node *>(m);
+        table = vector<Node *>(m, nullptr);
+        hashFunctionSelected = hash;
+        clousisonSelected = clos;
     }
-    int divisionHashFunction(int key, int size)
+    int divisionHashFunction(int key)
     {
-        return (key % size);
+        return (key % table.size());
     }
-    int multiplicationHashFunction(int key, int size, float a = 0.618033)
+    int multiplicationHashFunction(int key, float a = 0.618033)
     {
         return (size * (a * key - (a * key)));
     }
-    int midSqureHashFunction(int value, int size)
+    int midSqureHashFunction(int value)
     {
         value *= value;
         int index = 0, zeros = 1;
@@ -63,7 +52,7 @@ public:
         }
         return index % size;
     }
-    int foldingHashFunction(int key, int size, bool isSimple = true)
+    int foldingHashFunction(int key, bool isSimple = true)
     {
         int zeros = 1;
         int temp = 0;
@@ -89,7 +78,7 @@ public:
         index += temp;
         return index % size;
     }
-    int universalHashFunction(int key, int size, const int primaryNumber = 10007, const int constA = 3, const int constB = 5)
+    int universalHashFunction(int key, const int primaryNumber = 10007, const int constA = 3, const int constB = 5)
     {
         return ((constA + key * constB) % primaryNumber) % size;
     }
@@ -126,32 +115,56 @@ public:
         return result;
     }
     // this is serparteChaning and open hashing
-    void seaprateChaning(int key, int data)
+    Node *seaprateChaning(int key, int data, bool isNotDelete = true)
     {
-        Node *head = table[key];
-        while (head->next != nullptr)
+        if (isNotDelete)
         {
-            head = head->next;
+            Node *head = table[key];
+            while (head->next != nullptr)
+            {
+                head = head->next;
+            }
+            head->next = new Node(data);
+            return head;
         }
-        head->next = new Node(data);
+        else
+        {
+            Node *head = table[key];
+            if (head->data == data)
+            {
+                table[key] = head->next;
+                head = nullptr;
+            }
+            do
+            {
+                if (head->next->data == data)
+                {
+                    head = head->next;
+                    head = nullptr;
+                    return nullptr;
+                }
+            } while (head != nullptr);
+        }
+        return nullptr;
     }
-    void openHasing(int key, int data)
+    Node *openHasing(int key, int data, bool isNotDelete)
     {
-        seaprateChaning(key, data);
+        return seaprateChaning(key, data, isNotDelete);
     }
     // this is open addressing or closed hashing
-    void linearOpenAddressingProbing(int key, int data)
+    Node *linearOpenAddressingProbing(int key, int data)
     {
         for (int i = key; i < table.size(); i++)
         {
             if (table[i] != nullptr)
             {
                 table[i] = new Node(data);
-                return;
+                return table[i];
             }
         }
+        return nullptr;
     }
-    void quadraticOpenAddressingProbing(int key, int data, const int c1 = 0.5, const int c2 = 0.5)
+    Node *quadraticOpenAddressingProbing(int key, int data, const int c1 = 0.5, const int c2 = 0.5)
     {
         int j = 1;
         for (int i = 0; i < table.size(); i++)
@@ -160,18 +173,19 @@ public:
             if (table[value] == nullptr)
             {
                 table[value] = new Node(data);
-                return;
+                return table[value];
             }
             else
             {
                 j++;
             }
         }
+        return nullptr;
     }
-    void doubleOpenAdressingProbing(int key)
+    Node *doubleOpenAdressingProbing(int key)
     {
         int m = table.size();
-        int h1 = divisionHashFunction(key, m);
+        int h1 = divisionHashFunction(key);
         int h2 = multiplicationHashFunction(key, m);
         int index = 0;
         for (int i = 0; table.size(); i++)
@@ -180,22 +194,295 @@ public:
             if (table[index] == nullptr)
             {
                 table[index] = new Node(key);
-                return;
+                return table[index];
             }
         }
+        return nullptr;
     }
 };
-class Hash : HashFunctions
+class Hash : public HashFunctions
 {
-
-    Hash(int m = 0) : HashFunctions(m)
+public:
+    Hash(int m = 0, int hashfunction = 0, int closion = 0) : HashFunctions(m, hashfunction, closion)
     {
+        printHashFunctionsNames();
     }
 
-public:
+    Node *choseColsisonFunction(int key, int data, bool isNotDelete = true)
+    {
+        if (clousisonSelected == 0)
+        {
+            // seaprateChaning
+            return seaprateChaning(key, data, isNotDelete);
+        }
+        else if (clousisonSelected == 1)
+        {
+            // openHasing
+            return openHasing(key, data, isNotDelete);
+        }
+        else if (clousisonSelected == 2)
+        {
+            // linearOpenAddressingProbing
+            return linearOpenAddressingProbing(key, data);
+        }
+        else if (clousisonSelected == 3)
+        {
+            // quadraticOpenAddressingProbing
+            return quadraticOpenAddressingProbing(key, data);
+        }
+        else if (clousisonSelected == 4)
+        {
+            // double
+            return doubleOpenAdressingProbing(data);
+        }
+        else
+        {
+            // Not selected Closision function
+            return nullptr;
+        }
+    }
+    void inseart(int data)
+    {
+        int index = 0;
+        if (hashFunctionSelected == 0)
+        {
+            // divisionHashFunction
+            index = divisionHashFunction(data);
+            if (table[index] == nullptr)
+            {
+                table[index] = new Node(data);
+            }
+            else
+            {
+                choseColsisonFunction(index, data);
+            }
+        }
+        else if (hashFunctionSelected == 1)
+        {
+            // multiplicationHashFunction
+            index = multiplicationHashFunction(data);
+            if (table[index] == nullptr)
+            {
+                table[index] = new Node(data);
+            }
+            else
+            {
+                choseColsisonFunction(index, data);
+            }
+        }
+        else if (hashFunctionSelected == 2)
+        {
+            // midSqureHashFunction
+            index = midSqureHashFunction(data);
+            if (table[index] == nullptr)
+            {
+                table[index] = new Node(data);
+            }
+            else
+            {
+                choseColsisonFunction(index, data);
+            }
+        }
+        else if (hashFunctionSelected == 3)
+        {
+            // foldingHashFunction
+            index = foldingHashFunction(data);
+            if (table[index] == nullptr)
+            {
+                table[index] = new Node(data);
+            }
+            else
+            {
+                choseColsisonFunction(index, data);
+            }
+        }
+        else if (hashFunctionSelected == 4)
+        {
+            // universalHashFunction
+            index = universalHashFunction(data);
+            if (table[index] == nullptr)
+            {
+                table[index] = new Node(data);
+            }
+            else
+            {
+                choseColsisonFunction(index, data);
+            }
+        }
+        else
+        {
+            cout << endl
+                 << "Not selected hash Function" << endl;
+        }
+    }
+    bool search(int data)
+    {
+        int index = 0;
+        if (hashFunctionSelected == 0)
+        {
+            // divisionHashFunction
+            index = divisionHashFunction(data);
+            if (table[index]->data == data)
+            {
+                return true;
+            }
+            else
+            {
+                return (choseColsisonFunction(index, data)->data == data);
+            }
+        }
+        else if (hashFunctionSelected == 1)
+        {
+            // multiplicationHashFunction
+            index = multiplicationHashFunction(data);
+            if (table[index]->data == data)
+            {
+                return true;
+            }
+            else
+            {
+                return (choseColsisonFunction(index, data)->data == data);
+            }
+        }
+        else if (hashFunctionSelected == 2)
+        {
+            // midSqureHashFunction
+            index = midSqureHashFunction(data);
+            if (table[index]->data == data)
+            {
+                return true;
+            }
+            else
+            {
+                return (choseColsisonFunction(index, data)->data == data);
+            }
+        }
+        else if (hashFunctionSelected == 3)
+        {
+            // foldingHashFunction
+            index = foldingHashFunction(data);
+            if (table[index]->data == data)
+            {
+                return true;
+            }
+            else
+            {
+                return (choseColsisonFunction(index, data)->data == data);
+            }
+        }
+        else if (hashFunctionSelected == 4)
+        {
+            // universalHashFunction
+            index = universalHashFunction(data);
+            if (table[index]->data == data)
+            {
+                return true;
+            }
+            else
+            {
+                return (choseColsisonFunction(index, data)->data == data);
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    bool deletion(int data)
+    {
+        int index = 0;
+        if (hashFunctionSelected == 0)
+        {
+            // divisionHashFunction
+            index = divisionHashFunction(data);
+            if (table[index]->data == data)
+            {
+                table[index] = nullptr;
+            }
+            else
+            {
+                choseColsisonFunction(index, data, false);
+            }
+        }
+        else if (hashFunctionSelected == 1)
+        {
+            // multiplicationHashFunction
+            index = multiplicationHashFunction(data);
+            if (table[index]->data == data)
+            {
+                table[index] = nullptr;
+            }
+            else
+            {
+                choseColsisonFunction(index, data, false);
+            }
+        }
+        else if (hashFunctionSelected == 2)
+        {
+            // midSqureHashFunction
+            index = midSqureHashFunction(data);
+            if (table[index]->data == data)
+            {
+                table[index] = nullptr;
+            }
+            else
+            {
+                choseColsisonFunction(index, data, false);
+            }
+        }
+        else if (hashFunctionSelected == 3)
+        {
+            // foldingHashFunction
+            index = foldingHashFunction(data);
+            if (table[index]->data == data)
+            {
+                table[index] = nullptr;
+            }
+            else
+            {
+                choseColsisonFunction(index, data, false);
+            }
+        }
+        else if (hashFunctionSelected == 4)
+        {
+            // universalHashFunction
+            index = universalHashFunction(data);
+            if (table[index]->data == data)
+            {
+                table[index] = nullptr;
+            }
+            else
+            {
+                choseColsisonFunction(index, data, false);
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+    void printHashFunctionsNames()
+    {
+        cout << endl
+             << "0, Divission\n1, Multiplication,\n2, MidSquare,\n3, Folding,\n4, Universal" << endl;
+        cout << endl
+             << "0, seaprate Chaning Probing\n1, Open Hasing probing,\n2, Linear,\n3, Quadratic,\n4, double" << endl;
+    }
+    int encription(int data)
+    {
+        return creptographicHashFunction(data);
+    }
+    void insert(int data)
+    {
+    }
     int getSize()
     {
         return table.size();
+    }
+    vector<Node *> getTable()
+    {
+        return table;
     }
     void print()
     {

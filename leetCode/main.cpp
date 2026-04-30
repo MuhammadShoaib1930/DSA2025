@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 
-#include "_05_2.cpp"
+#include "_09.cpp"
 using namespace std;
 
 void _print(vector<int> res) {
@@ -20,18 +20,19 @@ vector<int> _input(int n) {
 int main() {
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
-    int m=1;
-    // cin >> m;
+    string a,b;
+    cin >> a>>b;
+    cout << addBinary(a,b) << " ";
+    // cin >> a>>b;
+    // cout << addBinary(a,b) << " ";
+    // cin >> a>>b;
+    // cout << addBinary(a,b) << " ";
+    // cin >> a>>b;
+    // cout << addBinary(a,b) << " ";
+    // cin >> a>>b;
+    // cout << addBinary(a,b) << " ";
+    // cin >> a>>b;
+    // cout << ( (4 >> 1)) << " ";
 
-    for (int i = 0; i < m; i++){
-
-        int n=1;
-        // cin >> n;
-        vector<int> v1 ={1 ,2, 3, 0 ,0 ,0};
-        vector<int> v2 = {2, 5 ,6};
-
-        merge(v1,3,v2,3);
-        _print(v1);
-    }
     return 0;
 }

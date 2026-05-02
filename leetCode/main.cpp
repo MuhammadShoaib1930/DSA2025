@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 
-#include "_09.cpp"
+#include "_12.cpp"
 using namespace std;
 
 void _print(vector<int> res) {
@@ -17,22 +17,14 @@ vector<int> _input(int n) {
     }
     return values;
 }
+
 int main() {
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
-    string a,b;
-    cin >> a>>b;
-    cout << addBinary(a,b) << " ";
-    // cin >> a>>b;
-    // cout << addBinary(a,b) << " ";
-    // cin >> a>>b;
-    // cout << addBinary(a,b) << " ";
-    // cin >> a>>b;
-    // cout << addBinary(a,b) << " ";
-    // cin >> a>>b;
-    // cout << addBinary(a,b) << " ";
-    // cin >> a>>b;
-    // cout << ( (4 >> 1)) << " ";
+    int n;
+    cin >> n;
+    vector<int> inp = _input(n);
+    cout << maxProfit(inp) << endl;
 
     return 0;
 }

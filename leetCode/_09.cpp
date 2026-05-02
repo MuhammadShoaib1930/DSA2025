@@ -29,63 +29,25 @@ Each string does not contain leading zeros except for the zero itself.
 using namespace std;
 
 string addBinary(string a, string b) {
-    int carry = 0;
     int i = a.size() - 1;
     int j = b.size() - 1;
-    string str = "";
-    while (i >= 0 && j >= 0) {
-        if (carry == 0 && (a[i] == '1' && b[j] == '1')) {
-            carry = 1;
-            str += '0';
-        } else if (carry == 1 && (a[i] == '0' && b[j] == '0')) {
-            carry = 0;
-            str += '1';
-        } else if (carry == 0 && (a[i] == '1' || b[j] == '1')) {
-            str += '1';
-        } else if (carry == 1 && (a[i] == '1' || b[j] == '1')) {
-            str += '1';
-        } else if (carry == 1 && (a[i] == '1' && b[j] == '1')) {
-            str += '1';
-        }
-        i--;
-        j--;
-    }
-    while (i >= 0) {
-        if (carry == 1 && a[i] == '1') {
-            str += '0';
-        } else if (carry == 1 && a[i] == '0') {
-            carry = 0;
-            str += '1';
-        } else if (carry == 0 && a[i] == '1') {
-            str += '1';
-        } else {
+    int carry = 0;
+    string res = "";
+    while (i >= 0 || j >= 0 || carry > 0) {
+        int sum = carry;
+        if (i >= 0) sum += a[i--] - '0';
+        if (j >= 0) sum += b[j--] - '0';
 
-            str += '0';
-        }
-        i--;
+        res += (sum % 2) + '0';
+        carry = sum / 2;
     }
-    while (j >= 0) {
-        if (carry == 1 && b[j] == '1') {
-            str += '0';
-        } else if (carry == 1 && b[j] == '0') {
-            carry = 0;
-            str += '1';
-        } else if (carry == 0 && b[j] == '1') {
-            str += '1';
-        } else {
-            str += '0';
-        }
-        j--;
+    i = 0, j = res.size() - 1;
+    while (i < j) {
+        char ch = res[i];
+        res[i] = res[j];
+        res[j] = ch;
+        i++, j--;
     }
-    i = 0;
-    j = str.size() - 1;
-    while (i<j)
-    {
-        char ch = str[i];
-        str[i] = str[j];
-        str[j] = ch;
-        i++;
-        j--;
-    }
-    return str;
+
+    return res;
 }

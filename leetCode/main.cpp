@@ -1,7 +1,8 @@
 #include <iostream>
 #include <vector>
 
-#include "_12.cpp"
+#include "list_node.cpp"
+#include "_15.cpp"
 using namespace std;
 
 void _print(vector<int> res) {
@@ -17,14 +18,35 @@ vector<int> _input(int n) {
     }
     return values;
 }
+ListNode* inputList(int n) {
+    ListNode* head = nullptr;
 
+    int value;
+    for (int i = 0; i < n; i++) {
+        cin >> value;
+        ListNode* node = new ListNode(value);
+        if (head == nullptr) {
+            head = node;
+        } else {
+            ListNode* temp = head;
+            while (temp->next != nullptr) {
+                temp = temp->next;
+            }
+            temp->next = node;
+        }
+    }
+    return head;
+}
+void printList(ListNode* head) {
+    while (head != nullptr) {
+        cout << head->val << " ";
+        head = head->next;
+    }
+    cout << endl;
+}
 int main() {
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
-    int n;
-    cin >> n;
-    vector<int> inp = _input(n);
-    cout << maxProfit(inp) << endl;
-
+ 
     return 0;
 }

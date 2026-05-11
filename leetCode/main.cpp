@@ -2,7 +2,6 @@
 #include <vector>
 
 #include "list_node.cpp"
-#include "_15.cpp"
 using namespace std;
 
 void _print(vector<int> res) {
@@ -44,9 +43,12 @@ void printList(ListNode* head) {
     }
     cout << endl;
 }
+#include "_16.cpp"
 int main() {
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
- 
+    string s = "";
+    cin >> s;
+    cout << longestPalindrome(s);
     return 0;
 }

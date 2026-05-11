@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 
-#include "list_node.cpp"
+#include "_17.cpp"
 using namespace std;
 
 void _print(vector<int> res) {
@@ -43,12 +43,16 @@ void printList(ListNode* head) {
     }
     cout << endl;
 }
-#include "_16.cpp"
+
 int main() {
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
-    string s = "";
-    cin >> s;
-    cout << longestPalindrome(s);
+    int n = 0;
+    cin >> n;
+    ListNode* l1 = inputList(n);
+    cin >> n;
+    ListNode* l2 = inputList(n);
+    ListNode* re = mergeTwoLists(l1, l2);
+    printList(re);
     return 0;
 }

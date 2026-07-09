@@ -15,8 +15,11 @@ int maximumWealth(vector<vector<int>>& accounts) {
 }
 
 int main() {
-    vector<vector<int>> arr;
-    arr = {{2, 8, 7}, {7, 1, 3}, {1, 9, 5}};
-    cout << maximumWealth(arr);
+    // vector<vector<int>> arr;
+    // arr = {{2, 8, 7}, {7, 1, 3}, {1, 9, 5}};
+    // cout << maximumWealth(arr);
+    char a = 'B';
+    ++a;
+    cout << 4-3*2+6/2;
     return 0;
 }

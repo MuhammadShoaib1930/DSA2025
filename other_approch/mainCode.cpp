@@ -1,7 +1,6 @@
 #include <iostream>
 #include <vector>
 #include<unordered_map>
-#include "graph.cpp"
 using namespace std;
 
 string longestStr(int st, int ed, string s, int n) {
@@ -32,23 +31,6 @@ string longestPalindrome(string s) {
         i++;
     }
     return result;
-}
-int fib(int n, vector<int>& db) {
-    if (n <= 1)return n;
-    if (db[n] != -1) return db[n];
-    db[n] = fib(n - 1, db) + fib(n - 2, db);
-    return db[n];
-}
-int sumR(int n) {
-    if (n <= 1)return n;
-    cout << n << " ";
-    return sumR(n - 1) + n;
-}
-int sumA(int n) {
-    if (n <= 1)return n;
-    int s = sumA(n - 1) + n;
-    cout << n << " ";
-    return s;
 }
 string convert(string s, int numRows) {
     int n = s.size();
@@ -227,47 +209,127 @@ bool containsNearbyDuplicate(vector<int>& nums, int k) {
     return false;
 }
 vector<string> summaryRanges(vector<int>& nums) {
+
     vector<string> res;
-    int start = nums[0];int end = nums[0];
-    int count = 0;
-    for (int i = 1; i < res.size(); i++)
+    if (nums.empty())return res;
+    int st = nums[0];
+    int i = 0;
+    int n = nums.size();
+    while (i < n)
     {
-        count++;
-        if (start + count == nums[i]) {
-            end = nums[i];
+        if (i < n - 1 && nums[i] + 1 == nums[i + 1]) {
+            i++;
         }
         else {
+            if (st == nums[i]) {
+                res.push_back(to_string(st));
+            }
+            else {
 
-            res.push_back(to_string(start)  + "->" +to_string(end) );
-            start = nums[i];
-            end = nums[i];
-            count = 0;
+                res.push_back(to_string(st) + "->" + to_string(nums[i]));
+            }
+            i++;
+            if (i < n) {
+                st = nums[i];
+
+            }
         }
     }
+
 
 
     return res;
 }
-int main() {
-    vector<int> input = { 1,2,3,5,6,8,9 };
-    vector<string> s = summaryRanges(input);
-    for (int j = 0; j < s.size(); j++)
+int missingNumber1(vector<int>& nums) {
+    if (nums.empty())return 0;
+    int n = nums.size();
+
+    int minValue = 0;
+    for (int i = 0; i < n; i++)
     {
-        cout << s[j] << " ";
+        for (int j = 0; j < n; j++)
+        {
+            if (minValue == nums[j]) {
+                minValue++;
+            }
+
+        }
     }
 
+    return minValue;
+}
+int missingNumber2(vector<int>& nums) {
+    int n = nums.size();
+    vector<bool> isPresent = vector<bool>(n + 1, false);
+    for (int i = 0; i < n; i++)
+    {
+        isPresent[nums[i]] = true;
+    }
+    for (int i = 0; i <= n; i++)
+    {
+        if (isPresent[i] == false) {
+            return i;
+        }
+    }
+    return 0;
 
-    // cout <<"123 "<< myAtoi("123")<<endl;
-    // cout <<"-123 "<< myAtoi("-123")<<endl;
-    // cout <<"0 "<< myAtoi("0")<<endl;
-    // cout <<"00-1 "<< myAtoi("00-1")<<endl;
-    // cout <<"0-123 "<< myAtoi("0-123")<<endl;
-    // cout << isMatch("aaaaa", ".*aaaaaaaa") << endl;
-    // cout <<"0a123 "<< myAtoi("0a123")<<endl;
-    // cout <<"0-1-23 "<< myAtoi("0-1-23")<<endl;
-    // vector<int> db = vector<int>(7, -1);
-    // int f = fib(6, db);
-    // cout << endl << f <-< endl;
+}
+int missingNumber(vector<int>& nums) {
+    int n = nums.size();
+    int sum = 0;
+    for (int i = 0; i <= n; i++)
+    {
+        sum += i;
+        if (i < n) {
+            sum -= nums[i];
+        }
+    }
+    return sum;
+
+}
+class NumArray1 {
+    vector<int> array;
+
+public:
+    NumArray1(vector<int>& nums) {
+        array = nums;
+    }
+
+    int sumRange(int left, int right) {
+        int sum = 0;
+        for (int i = left; i <= right; i++)
+        {
+            sum += array[i];
+        }
+        return sum;
+    }
+};
+class NumArray {
+    vector<int> array;
+
+public:
+    NumArray(vector<int>& nums) {
+        int n = nums.size();
+        array.push_back(nums[0]);
+        for (int i = 1; i < n; i++)
+        {
+            array.push_back(nums[i] + array[i - 1]);
+        }
+
+    }
+
+    int sumRange(int left, int right) {
+        if (left == 0) return array[right];
+        return array[right] - array[left - 1];
+    }
+};
+int main() {
+    vector<int> input = { 1,2,3,4,5 ,6,7 };
+    // cout << missingNumber(input);
+    NumArray object = NumArray(input);
+    cout << object.sumRange(0, 4) << " ";
+    cout << object.sumRange(0, 6);
+
+
     return 0;
 }
-// 1 hours completed video

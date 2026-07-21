@@ -238,7 +238,7 @@ vector<string> summaryRanges(vector<int>& nums) {
         }
         else {
 
-            res.push_back(to_string(start)  + "->" +to_string(end) );
+            res.push_back(to_string(start) + "->" + to_string(end));
             start = nums[i];
             end = nums[i];
             count = 0;
@@ -248,13 +248,28 @@ vector<string> summaryRanges(vector<int>& nums) {
 
     return res;
 }
-int main() {
-    vector<int> input = { 1,2,3,5,6,8,9 };
-    vector<string> s = summaryRanges(input);
-    for (int j = 0; j < s.size(); j++)
-    {
-        cout << s[j] << " ";
+void subString(string s, vector<string> dp, int index = 0, string result = "", ) {
+    if (index > s.size()) {
+        cout << result << " ";
+        return;
     }
+
+    if (dp[index].empty()) {
+        dp[index] = result + s[index];
+        subString(s, dp, index + 1, result + s[index]);
+        subString(s, dp, index + 1, result);
+
+    }
+}
+int main() {
+    vector<string> dp = vector<string>(4, "");
+    subString("abc", dp);
+    // vector<int> input = { 1,2,3,5,6,8,9 };
+    // vector<string> s = summaryRanges(input);
+    // for (int j = 0; j < s.size(); j++)
+    // {
+    //     cout << s[j] << " ";
+    // }
 
 
     // cout <<"123 "<< myAtoi("123")<<endl;

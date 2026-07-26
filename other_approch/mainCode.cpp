@@ -2,9 +2,12 @@
 #include <vector>
 #include<unordered_map>
 #include <set>
+#include<map>
 #include <unordered_set>
 #include <queue>
 #include <algorithm>
+#include <stack>
+#include "my_algo.cpp"
 using namespace std;
 
 
@@ -820,27 +823,346 @@ int distributeCandies(vector<int>& candyType) {
 }
 int findLHS(vector<int>& nums) {
     //  Question number 594
+    sort(nums.begin(), nums.end());
     int n = nums.size();
-    vector<int> negativeV = vector<int>(n, 0);
-    vector<int> positiveV = vector<int>(n, 0);
+    int i = 0, j = 0;
+    int result = 0;
+    while (i < n)
+    {
+        j = i;
+        while (j < n && (nums[i] == nums[j] || nums[i] + 1 == nums[j]))j++;
+        if (nums[i] != nums[j - 1]) {
+            result = max(result, j - i);
+
+        }
+        int temp = nums[i];
+        while (i < n && (temp == nums[i]))i++;
+
+
+    }
+    return result;
+}
+int maxCount(int m, int n, vector<vector<int>>& ops) {
+    //Question number 598
+    if (ops.empty()) return m * n;
+    int minX = INT_MAX;
+    int minY = INT_MAX;
+    for (int i = 0; i < ops.size(); i++)
+    {
+        minX = min(minX, ops[i][0]);
+        minY = min(minY, ops[i][1]);
+    }
+
+    return minX * minY;
+}
+vector<string> findRestaurant(vector<string>& list1, vector<string>& list2) {
+    //  Question number 599
+    unordered_map<string, int> list1Map;
+    for (int i = 0; i < list1.size(); i++)
+    {
+        list1Map[list1[i]] = i;
+    }
+    vector<string> result;
+    int privSum = INT_MAX;
+    for (int i = 0; i < list2.size(); i++)
+    {
+        int currSum = list1Map.at(list2[i]) + i;
+        if (list1Map.find(list2[i]) != list1Map.end()) {
+            if (privSum == currSum) {
+                result.push_back(list2[i]);
+            }
+            else if (privSum > currSum) {
+                result.clear();
+                result.push_back(list2[i]);
+                privSum = currSum;
+            }
+        }
+    }
+    return result;
+}
+int maximumProduct(vector<int>& nums) {
+    // Question number 628
+    int n = nums.size();
+    sort(nums.begin(), nums.end());
+    int maxProdect = INT_MIN;
+    maxProdect = max(maxProdect, nums[0] * nums[1] * nums[n - 1]);
+
+    maxProdect = max(maxProdect, nums[n - 3] * nums[n - 2] * nums[n - 1]);
+
+
+    return maxProdect;
+}
+double max(double a, double b) {
+    return (a < b) ? b : a;
+}
+double findMaxAverage(vector<int>& nums, int k) {
+    // Question number 643
+    int n = nums.size();
+    deque<int> dq;
+    double maxSum = 0;
+    for (int i = 0; i < k; i++)
+    {
+        maxSum += nums[i];
+    }
+    double maxAvarage = -2.14748e+09;
+    maxAvarage = max(maxSum / k, maxAvarage);
+    for (int j = k, i = 0; j < n; j++, i++)
+    {
+        maxSum = maxSum - nums[i] + nums[j];
+        maxAvarage = max(maxSum / k, maxAvarage);
+    }
+    return maxAvarage;
+
+
+}
+vector<int> findErrorNums(vector<int>& nums) {
+    //  Question number 645
+    int n = nums.size();
+    vector<bool> temp = vector<bool>(n + 1, false);
+    vector<int> result;
     for (int i = 0; i < n; i++)
     {
-        int index = nums[i];
-        if (index < 0) {
-            negativeV[-index]++;
+        if (temp[nums[i]]) {
+            result.push_back(nums[i]);
         }
-        else {
-            positiveV[index]++;
+        temp[nums[i]] = true;
+    }
+    for (int i = 1; i < temp.size(); i++)
+    {
+        if (temp[i] == false) {
+            result.push_back(i);
         }
     }
 
-    int result = 0;
     return result;
 }
-int main() {
-    vector<int> input = { -3,-1,-1,-1,-3,-2,1,2,3,4,5,1,2,3,4,5,0,0,0,1,2,3 };
-    cout << findLHS(input);
+vector<vector<int>> imageSmoother(vector<vector<int>>& img) {
+    //  Question number 661
+    int n = img.size();
+    vector<vector<int>> imgFilter = img;
+    for (int i = 0; i < n; i++)
+    {
+        int m = img[i].size();
+        for (int j = 0; j < m; j++)
+        {
+            int sum = img[i][j];
+            int count = 1;
+            if (j > 0) {
+                sum += img[i][j - 1];count++;
+            }
+            if (j < m - 1) {
+                sum += img[i][j + 1];count++;
+            }
+            if (i < n - 1) {
+                sum += img[i + 1][j];count++;
+                if (j > 0) {
+                    sum += img[i + 1][j - 1];count++;
+                }
+                if (j < m - 1) {
+                    sum += img[i + 1][j + 1];count++;
+                }
+            }
+            if (i > 0) {
+                sum += img[i - 1][j];count++;
+                if (j > 0) {
+                    sum += img[i - 1][j - 1];count++;
+                }
+                if (j < m - 1) {
+                    sum += img[i - 1][j + 1];count++;
+                }
+            }
 
+            imgFilter[i][j] = (sum / count);
+        }
+
+    }
+    return imgFilter;
+}
+int findLengthOfLCIS(vector<int>& nums) {
+    int n = nums.size();
+    int curr = 1;
+    int maxSum = 1;
+    for (int i = 1; i < n; i++)
+    {
+        if (nums[i - 1] < nums[i]) {
+            curr++;
+            maxSum = max(maxSum, curr);
+        }
+        else {
+            curr = 1;
+        }
+    }
+    return maxSum;
+}
+
+int calPoints(vector<string>& operations) {
+    //  Question numver 682
+    int n = operations.size();
+    stack<int> stk;
+    for (int i = 0; i < n; i++)
+    {
+        if (operations[i] == "D") {
+            if (!stk.empty()) {
+                stk.push(stk.top() * 2);
+            }
+        }
+        else if (operations[i] == "C") {
+            if (!stk.empty()) {
+                stk.pop();
+            }
+        }
+        else if (operations[i] == "+") {
+            if (!stk.empty()) {
+                int p1 = stk.top();
+                stk.pop();
+                if (!stk.empty()) {
+                    int p2 = stk.top();
+                    stk.push(p1);
+                    stk.push(p1 + p2);
+                }
+            }
+        }
+        else {
+            stk.push(string_to_integer(operations[i]));
+        }
+    }
+    int res = 0;
+    while (!stk.empty())
+    {
+        res += stk.top();
+        stk.pop();
+    }
+
+
+    return res;
+
+}
+int findShortestSubArray(vector<int>& nums) {
+    //  Question number 697
+    struct  mydata {
+        int freq = 0;
+        int minIndex = INT_MAX;
+        int maxIndex = INT_MIN;
+    };
+
+    int n = nums.size();
+    int maxValue = 0;
+    for (int i = 0; i < nums.size(); i++)
+    {
+        maxValue = max(maxValue, nums[i]);
+    }
+    vector<mydata> arr = vector<mydata>(maxValue + 1, mydata());
+
+    for (int i = 0; i < n; i++)
+    {
+        arr[nums[i]].freq++;
+        int minIndex = min(i, arr[nums[i]].minIndex);
+        int maxIndex = max(i, arr[nums[i]].maxIndex);
+        arr[nums[i]].minIndex = minIndex;
+        arr[nums[i]].maxIndex = maxIndex;
+
+    }
+
+    int res = INT_MAX;
+    int freq = INT_MIN;
+    for (int i = 0; i < arr.size(); i++) {
+        if (arr[i].maxIndex == INT_MIN || arr[i].minIndex == INT_MAX) {
+            continue;
+        }
+        int currDis = arr[i].maxIndex - arr[i].minIndex + 1;
+        int currFreq = arr[i].freq;
+        if (freq < currFreq) {
+            res = currDis;
+            freq = currFreq;
+        }
+        else if (freq == currFreq) {
+            res = min(res, currDis);
+        }
+    }
+    return res;
+
+}
+int search(vector<int>& nums, int target) {
+    // Question number 704
+    int s = 0;
+    int e = nums.size() - 1;
+    int mid = s + (e - s) / 2;
+    while (s <= e)
+    {
+        mid = s + (e - s) / 2;
+        if (target == nums[mid]) {
+            return mid;
+        }
+        else if (target < nums[mid]) {
+            e = mid - 1;
+        }
+        else {
+            s = mid + 1;
+        }
+    }
+    return -1;
+}
+class MyHashSet {
+    // Question number 705
+    vector<bool> hashTable;
+public:
+    MyHashSet() {
+        hashTable = vector<bool>(1e6, false);
+    }
+
+    void add(int key) {
+        hashTable[key] = true;
+    }
+
+    void remove(int key) {
+        hashTable[key] = false;
+    }
+
+    bool contains(int key) {
+        return hashTable[key];
+    }
+};
+// class MyHashMap {
+//     vector<bool> isContains = vector<bool>(1e6+1,false);
+// public:
+//     MyHashMap() {
+//     }
+
+//     void put(int key, int value) {
+//         data[key] = value;
+//     }
+
+//     int get(int key) {
+
+//         return data[key];
+//     }
+
+//     void remove(int key) {
+//         data[key]=-1;
+//     }
+// };
+int main() {
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+#endif
+    int n = 0;
+    cin >> n;
+    unordered_set<int> data;
+    for (int i = 0; i < n; i++)
+    {
+
+        if (data.find(i)!= data.end()) {
+            cout << endl << i << " is avaliable " << endl;
+        }
+        data.insert(i%3);
+        cout <<i%3<< " ";
+    }
+    cout << endl<< endl;
+    for (auto var : data)
+    {
+        cout << var <<" ";
+    }
 
     return 0;
 }

@@ -2,18 +2,34 @@
 #include <vector>
 
 using namespace std;
+int charToIndex(char c) {
+    if (c >= 'a' && c <= 'z')
+        return c - 'a';
 
+    if (c >= 'A' && c <= 'Z')
+        return c - 'A';
+    return -1;
+}
+void printVectror(vector<int > arr) {
+    for (int i = 0; i < arr.size(); i++)
+    {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+}
 void print2dVector(vector<vector<int>> matrix) {
     for (int i = 0; i < matrix.size(); i++)
     {
-        for (int j = 0; j < matrix[i].size(); j++)
-        {
-            cout << matrix[i][j] << " ";
-        }
+        printVectror(matrix[i]);
         cout << endl;
     }
-    cout << "\tFinished\t" << endl;
 }
+struct PairHash {
+    size_t operator()(const pair<int, int>& p) const {
+        return hash<int>()(p.first) ^ (hash<int>()(p.second) << 1);
+    }
+};
+
 vector<int> inputVector() {
     int n = 0;
     cin >> n;

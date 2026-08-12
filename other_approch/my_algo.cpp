@@ -17,6 +17,9 @@ void printVectror(vector<int > arr) {
     }
     cout << endl;
 }
+double maxDouble(double a, double b) {
+    return (a > b) ? a : b;
+}
 void print2dVector(vector<vector<int>> matrix) {
     for (int i = 0; i < matrix.size(); i++)
     {
@@ -65,4 +68,64 @@ int string_to_integer(string str) {
         res = (res * 10) + (str[i] - '0');
     }
     return res * nag;
+}
+bool isSymbol(char c) {
+    switch (c)
+    {
+    case ' ':
+        return true;
+    case '!':
+        return true;
+    case '?':
+        return true;
+    case ',':
+        return true;
+    case ';':
+        return true;
+    case '.':
+        return true;
+    case '\'':
+        return true;
+    case '\"':
+        return true;
+    case '\\':
+        return true;
+    case '/':
+        return true;
+    case '-':
+        return true;
+    case '_':
+        return true;
+    case '~':
+        return true;
+    case '`':
+        return true;
+
+    default:
+        return false;
+    }
+    return false;
+}
+unordered_map<string, int> wordsSplit(string str) {
+    unordered_map<string, int> res;
+    int n = str.size();
+    int i = 0;
+    while (i < n)
+    {
+        string t = "";
+        while (i < n && !isSymbol(str[i]))
+        {
+            if (str[i] >= 'a' && str[i] <= 'z') {
+                t += str[i];
+            }
+            else {
+                t += (str[i] - 'A') + 'a';
+            }
+            i++;
+        }
+        res[t]++;
+        while (i < n && isSymbol(str[i]))i++;
+    }
+    return res;
+
 }

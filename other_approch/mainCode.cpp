@@ -1517,9 +1517,303 @@ string shortestCompletingWord(string licensePlate, vector<string>& words) {
     }
     return res;
 }
- vector<int> numberOfLines(vector<int>& widths, string s) {
+vector<int> numberOfLines(vector<int>& widths, string s) {
+    int row = 1;
+    int sum = 0;
+    for (char c : s) {
+        int v = widths[c - 'a'];
+        if ((sum + v) > 100) {
+            sum = 0;
+            row++;
+        }
+        sum += v;
+    }
+    return { row,sum };
+}
+
+
+double largestTriangleArea(vector<vector<int>>& points) {
+    double maxV = INT_MIN;
+    int n = points.size();
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = i + 1; j < n; j++)
+        {
+            for (int k = j + 1; k < n; k++)
+            {
+                double v =
+                    (points[i][0] * (points[j][1] - points[k][1]) + points[j][0] * (points[k][1] - points[i][1]) + points[k][0] * (points[i][1] - points[j][1]));
+                v = v / 2;
+                maxV = maxDouble(maxV, abs(v));
+            }
+
+        }
 
     }
+    return maxV;
+}
+
+string mostCommonWord(string paragraph, vector<string>& banned) {
+    unordered_map<string, int> p = wordsSplit(paragraph);
+    for (string word : banned) {
+        p.erase(word);
+    }
+    string res = "";
+    int maxSize = 0;
+    for (pair t : p) {
+        if (maxSize < t.second) {
+            res = t.first;
+            maxSize = t.second;
+        }
+    }
+    return res;
+}
+vector<int> shortestToChar(string s, char c) {
+    int n = s.size();
+    vector<int> cIndexs;
+    for (int i = 0; i < n; i++)
+    {
+        if (c == s[i]) {
+            cIndexs.push_back(i);
+        }
+    }
+    vector<int> res;
+    int j = 0;
+    int m = cIndexs.size();
+    for (int i = 0; i < n; i++)
+    {
+        if (j + 1 < m && abs(cIndexs[j] - i) > abs(cIndexs[j + 1] - i)) {
+            j++;
+            res.push_back(abs(cIndexs[j] - i));
+        }
+        else {
+            res.push_back(abs(cIndexs[j] - i));
+        }
+    }
+    return res;
+
+
+}
+vector<vector<int>> flipAndInvertImage(vector<vector<int>>& image) {
+    int n = image.size();
+
+    for (int k = 0; k < n; k++)
+    {
+        int i = 0, m = image[k].size() - 1;
+        int j = m;
+        while (i <= j)
+        {
+            int temp = image[k][i];
+            image[k][i] = image[k][j];
+            image[k][j] = temp;
+            i++;j--;
+        }
+        for (int i = 0; i <= m; i++)
+        {
+            image[k][i] = (image[k][i] == 0) ? 1 : 0;
+
+        }
+
+
+    }
+    return image;
+}
+bool lemonadeChange(vector<int>& bills) {
+    if (bills[0] > 5) {
+        return false;
+    }
+    int n = bills.size();
+    int f5 = 0;
+    int f10 = 0;
+    int f15 = 0;
+    int f20 = 0;
+
+    for (int i = 0; i < n; i++)
+    {
+        if (bills[i] == 5) {
+            f5++;
+        }
+        else if (bills[i] == 10) {
+            if (f5 > 0) {
+                f5--;
+                f10++;
+            }
+            else {
+                return false;
+            }
+        }
+        else if (bills[i] == 20) {
+            if (f15 > 0) {
+                f15--;
+                f20++;
+            }
+            else if (f10 > 0 && f5 > 0) {
+                f10--;f5--;
+                f20++;
+            }
+            else if (f5 >= 3) {
+                f5 = f5 - 3;
+                f20++;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+vector<vector<int>> transpose(vector<vector<int>>& matrix) {
+
+    int n = matrix.size();
+    int m = matrix[0].size();
+    vector<vector<int>> res(m, vector<int>(n, 0));
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            res[j][i] = matrix[i][j];
+        }
+    }
+
+
+
+    return res;
+
+}
+vector<int> sortArrayByParity(vector<int>& nums) {
+    int n = nums.size();
+    vector<int> res(n, 0);
+    int k = 0;
+    int i = 0;
+    int j = n - 1;
+    while (k < n)
+    {
+        if (nums[k] & 1 == 1) {
+            res[j] = nums[k];
+            j--;
+        }
+        else {
+            res[i] = nums[k];
+            i++;
+        }
+        k++;
+    }
+
+    return res;
+}
+bool hasGroupsSizeX(vector<int>& deck) {
+    int n = deck.size();
+    vector<int> freq(1e4 + 1, 0);
+    for (auto&& v : deck)
+    {
+        freq[v]++;
+    }
+    int count = 0;
+    int freqPast = 0;
+    for (int i = 0; i < freq.size(); i++)
+    {
+        if (freqPast == 0 && freq[i] > 0) {
+            freqPast = freq[i];
+            count++;
+        }
+        if (freqPast < freq[i]) {
+            return false;
+        }
+    }
+
+
+    return true;
+
+}
+int projectionArea(vector<vector<int>>& grid) {
+    int n = grid.size();
+    int sum = 0;
+    for (int i = 0; i < n; i++)
+    {
+        int maxR = 0;
+        for (int j = 0; j < n; j++)
+        {
+            maxR = max(maxR, grid[i][j]);
+            if (grid[i][j] != 0) {
+
+                sum++;
+            }
+        }
+        sum += maxR;
+        maxR = 0;
+        for (int j = 0; j < n; j++)
+        {
+            maxR = max(maxR, grid[j][i]);
+        }
+        sum += maxR;
+    }
+
+
+    return sum;
+
+}
+vector<int> fairCandySwap(vector<int>& aliceSizes, vector<int>& bobSizes) {
+    int n1 = aliceSizes.size();
+    int n2 = bobSizes.size();
+    int sumR1 = 0;
+    int sumR2 = 0;
+    for (int i = 0; i < n1 || i < n2; i++)
+    {
+        if (i < n1) {
+
+            sumR1 += aliceSizes[i];
+        }
+        if (i < n2) {
+
+            sumR2 += bobSizes[i];
+        }
+    }
+
+    if (sumR1 < sumR2) {
+        int minV = aliceSizes[0];
+        for (int i = 0; i < n1 || i < n2; i++)
+        {
+            if (i < n1) {
+                minV = min(minV, aliceSizes[i]);
+            }
+            if (i < n2) {
+                sumR1 = sumR1 - minV + bobSizes[i];
+                sumR2 = sumR2 + minV - bobSizes[i];
+                if (sumR1 == sumR2) {
+                    return { minV , bobSizes[i] };
+                }
+                sumR1 = sumR1 + minV - bobSizes[i];
+                sumR2 = sumR2 - minV + bobSizes[i];
+            }
+
+        }
+
+    }
+    else {
+        int minV = bobSizes[0];
+        for (int i = 0; i < n1 || i < n2; i++)
+        {
+            if (i < n2) {
+                minV = min(minV, bobSizes[i]);
+            }
+            if (i < n1) {
+                sumR1 = sumR1 - minV + aliceSizes[i];
+                sumR2 = sumR2 + minV - aliceSizes[i];
+                if (sumR1 == sumR2) {
+                    return { aliceSizes[i],minV };
+                }
+                sumR1 = sumR1 + minV - aliceSizes[i];
+                sumR2 = sumR2 - minV + aliceSizes[i];
+            }
+
+        }
+    }
+
+
+
+    return { -1,-1 };
+}
 int main()
 {
 
@@ -1527,15 +1821,16 @@ int main()
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
 #endif
+    vector<int> inp1 = { 1,1 };
+    vector<int> inp2 = { 2,2 };
+    printVectror(fairCandySwap(inp1, inp2));
+    inp1 = { 1,2 };
+    inp2 = { 2,3 };
+    printVectror(fairCandySwap(inp1, inp2));
 
-    vector<string> input = { "step","steps","stripe","stepple" };
-    string sp = "1s3 PSt";
-
-    cout << shortestCompletingWord(sp, input) << endl;
-
-    input = { "looks","pest","stew","show" };
-    sp = "1s3";
-    cout << shortestCompletingWord(sp, input);
+    inp1 = { 2 };
+    inp2 = { 1,3 };
+    printVectror(fairCandySwap(inp1, inp2));
 
     return 0;
 }

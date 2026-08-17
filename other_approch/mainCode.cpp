@@ -1702,30 +1702,7 @@ vector<int> sortArrayByParity(vector<int>& nums) {
 
     return res;
 }
-bool hasGroupsSizeX(vector<int>& deck) {
-    int n = deck.size();
-    vector<int> freq(1e4 + 1, 0);
-    for (auto&& v : deck)
-    {
-        freq[v]++;
-    }
-    int count = 0;
-    int freqPast = 0;
-    for (int i = 0; i < freq.size(); i++)
-    {
-        if (freqPast == 0 && freq[i] > 0) {
-            freqPast = freq[i];
-            count++;
-        }
-        if (freqPast < freq[i]) {
-            return false;
-        }
-    }
 
-
-    return true;
-
-}
 int projectionArea(vector<vector<int>>& grid) {
     int n = grid.size();
     int sum = 0;
@@ -1814,6 +1791,196 @@ vector<int> fairCandySwap(vector<int>& aliceSizes, vector<int>& bobSizes) {
 
     return { -1,-1 };
 }
+// int surfaceArea(vector<vector<int>>& grid) {
+//     int n = grid.size();
+//     int total = 0;
+//     for (int i = 0; i < n; i++)
+//     {
+//         for (int j = 0; j < n; j++)
+//         {
+//             if (grid[i][j] != 0)
+//                 total += grid[i][j];
+//         }
+
+//     }
+//     total *= 6;
+//     int hight = 0;
+//     for (int i = 0; i < n; i++)
+//     {
+//         for (int j = 0; j < n; j++)
+//         {
+//             if (grid[i][j] != 0)
+//                 hight += grid[i][j] - 1;
+//         }
+
+//     }
+//     hight *= 2;
+//     int rowAndColumn = 0;
+//     for (int i = 0; i < n; i++)
+//     {
+//         int temp = grid[i][0];
+//         int temp2 = grid[0][i];
+//         for (int j = 0; j < n; j++)
+//         {
+//             if (grid[i][j] != 0) {
+
+//                 temp = min(temp, grid[i][j]);
+//                 temp2 = min(temp2, grid[j][i]);
+//             }
+
+//         }
+//         rowAndColumn += temp + temp2;
+
+//     }
+//     rowAndColumn *= 2;
+//     total = total - (hight + rowAndColumn);
+//     return total;
+
+// }
+bool isMonotonic(vector<int>& nums) {
+    int n = nums.size();
+
+    if (nums[0] > nums[n - 1]) {
+        for (int i = 0; i < n - 1; i++)
+        {
+            if (nums[i] < nums[i + 1]) {
+                return false;
+            }
+        }
+
+    }
+    else {
+        for (int i = 0; i < n - 1; i++)
+        {
+            if (nums[i] > nums[i + 1]) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+int smallestRangeI(vector<int>& nums, int k) {
+    int n = nums.size();
+    int minV = nums[0];
+    printVectror(nums);
+    for (int i = 0; i < n; i++)
+    {
+        minV = min(minV, nums[i]);
+    }
+    minV += k;
+    for (int i = 0; i < n; i++)
+    {
+        int t = minV - nums[i];
+        if (t >= (k * -1) && t <= k) {
+            nums[i] = minV;
+        }
+        else {
+            nums[i] = nums[i] - k;
+        }
+    }
+    printVectror(nums);
+    int result = 0;
+    int minVa = nums[0];
+    int maxVa = nums[0];
+    for (int i = 0; i < n; i++)
+    {
+        minVa = min(minVa, nums[i]);
+        maxVa = max(maxVa, nums[i]);
+    }
+    return maxVa - minVa;
+
+
+}
+bool hasGroupsSizeX(vector<int>& deck) {
+    if (deck.size() < 2)return false;
+    int n = deck.size();
+    int maxV = deck[0];
+    for (auto&& i : deck)
+    {
+        maxV = max(maxV, i);
+    }
+    vector<int> re(maxV + 1, 0);
+    for (auto&& i : deck) {
+        re[i]++;
+    }
+
+    for (int i = 0; i < n; i++)
+    {
+        bool isPossible = true;
+        for (int j : re) {
+            if (j % (i + 2) != 0) {
+                isPossible = false;
+                break;
+            }
+        }
+        if (isPossible) {
+            return true;
+        }
+    }
+
+    return false;
+}
+vector<int> sortArrayByParityII(vector<int>& nums) {
+    int n = nums.size();
+    stack<int> even;
+    stack<int> odd;
+    for (int i = 0; i < n; i++)
+    {
+        if ((i & 1) == 0) {
+            if ((nums[i] & 1) == 1) {
+                odd.push(i);
+            }
+        }
+        else {
+            if ((nums[i] & 1) == 0) {
+                even.push(i);
+
+            }
+
+        }
+    }
+    while (!even.empty() && !odd.empty())
+    {
+        int j = even.top();
+        int k = odd.top();
+        nums[j] = nums[j] ^ nums[k];
+        nums[k] = nums[j] ^ nums[k];
+        nums[j] = nums[j] ^ nums[k];
+        even.pop();
+        odd.pop();
+    }
+    return nums;
+}
+
+int numUniqueEmails(vector<string>& emails) {
+    unordered_set<string> res(emails.size());
+    string result;
+    int n = 0;
+    for (const string& e : emails)
+    {
+        result.clear();
+        n = e.size();
+        int i = 0;
+        for (i; i < n; i++)
+        {
+            if (e[i] == '.') {
+                continue;
+            }
+            else if (e[i] == '@') {
+                break;
+            }
+            else if (e[i] == '+') {
+                while (e[i] != '@') { i++; }
+                break;
+            }
+            result += e[i];
+        }
+        result.append(e, i, e.size() - i);
+        res.insert(result);
+    }
+    return res.size();
+}
+
 int main()
 {
 
@@ -1821,16 +1988,12 @@ int main()
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
 #endif
-    vector<int> inp1 = { 1,1 };
-    vector<int> inp2 = { 2,2 };
-    printVectror(fairCandySwap(inp1, inp2));
-    inp1 = { 1,2 };
-    inp2 = { 2,3 };
-    printVectror(fairCandySwap(inp1, inp2));
+    vector<string> e = { "test.email+alex@leetcode.com","test.e.mail+bob.cathy@leetcode.com","testemail+david@lee.tcode.com" };
+    // cout << numUniqueEmails(e);
+    e = { "fg.r.u.uzj+o.pw@kziczvh.com","r.cyo.g+d.h+b.ja@tgsg.z.com","fg.r.u.uzj+o.f.d@kziczvh.com","r.cyo.g+ng.r.iq@tgsg.z.com","fg.r.u.uzj+lp.k@kziczvh.com","r.cyo.g+n.h.e+n.g@tgsg.z.com","fg.r.u.uzj+k+p.j@kziczvh.com","fg.r.u.uzj+w.y+b@kziczvh.com","r.cyo.g+x+d.c+f.t@tgsg.z.com","r.cyo.g+x+t.y.l.i@tgsg.z.com","r.cyo.g+brxxi@tgsg.z.com","r.cyo.g+z+dr.k.u@tgsg.z.com","r.cyo.g+d+l.c.n+g@tgsg.z.com","fg.r.u.uzj+vq.o@kziczvh.com","fg.r.u.uzj+uzq@kziczvh.com","fg.r.u.uzj+mvz@kziczvh.com","fg.r.u.uzj+taj@kziczvh.com","fg.r.u.uzj+fek@kziczvh.com" };
+    cout << numUniqueEmails(e);
 
-    inp1 = { 2 };
-    inp2 = { 1,3 };
-    printVectror(fairCandySwap(inp1, inp2));
 
     return 0;
 }
+// g++ mainCode.cpp -o mainCode && .\mainCode

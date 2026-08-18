@@ -1791,52 +1791,6 @@ vector<int> fairCandySwap(vector<int>& aliceSizes, vector<int>& bobSizes) {
 
     return { -1,-1 };
 }
-// int surfaceArea(vector<vector<int>>& grid) {
-//     int n = grid.size();
-//     int total = 0;
-//     for (int i = 0; i < n; i++)
-//     {
-//         for (int j = 0; j < n; j++)
-//         {
-//             if (grid[i][j] != 0)
-//                 total += grid[i][j];
-//         }
-
-//     }
-//     total *= 6;
-//     int hight = 0;
-//     for (int i = 0; i < n; i++)
-//     {
-//         for (int j = 0; j < n; j++)
-//         {
-//             if (grid[i][j] != 0)
-//                 hight += grid[i][j] - 1;
-//         }
-
-//     }
-//     hight *= 2;
-//     int rowAndColumn = 0;
-//     for (int i = 0; i < n; i++)
-//     {
-//         int temp = grid[i][0];
-//         int temp2 = grid[0][i];
-//         for (int j = 0; j < n; j++)
-//         {
-//             if (grid[i][j] != 0) {
-
-//                 temp = min(temp, grid[i][j]);
-//                 temp2 = min(temp2, grid[j][i]);
-//             }
-
-//         }
-//         rowAndColumn += temp + temp2;
-
-//     }
-//     rowAndColumn *= 2;
-//     total = total - (hight + rowAndColumn);
-//     return total;
-
-// }
 bool isMonotonic(vector<int>& nums) {
     int n = nums.size();
 
@@ -1981,6 +1935,7 @@ int numUniqueEmails(vector<string>& emails) {
     return res.size();
 }
 
+
 int main()
 {
 
@@ -1988,11 +1943,6 @@ int main()
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
 #endif
-    vector<string> e = { "test.email+alex@leetcode.com","test.e.mail+bob.cathy@leetcode.com","testemail+david@lee.tcode.com" };
-    // cout << numUniqueEmails(e);
-    e = { "fg.r.u.uzj+o.pw@kziczvh.com","r.cyo.g+d.h+b.ja@tgsg.z.com","fg.r.u.uzj+o.f.d@kziczvh.com","r.cyo.g+ng.r.iq@tgsg.z.com","fg.r.u.uzj+lp.k@kziczvh.com","r.cyo.g+n.h.e+n.g@tgsg.z.com","fg.r.u.uzj+k+p.j@kziczvh.com","fg.r.u.uzj+w.y+b@kziczvh.com","r.cyo.g+x+d.c+f.t@tgsg.z.com","r.cyo.g+x+t.y.l.i@tgsg.z.com","r.cyo.g+brxxi@tgsg.z.com","r.cyo.g+z+dr.k.u@tgsg.z.com","r.cyo.g+d+l.c.n+g@tgsg.z.com","fg.r.u.uzj+vq.o@kziczvh.com","fg.r.u.uzj+uzq@kziczvh.com","fg.r.u.uzj+mvz@kziczvh.com","fg.r.u.uzj+taj@kziczvh.com","fg.r.u.uzj+fek@kziczvh.com" };
-    cout << numUniqueEmails(e);
-
 
     return 0;
 }

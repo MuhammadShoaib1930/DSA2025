@@ -12,6 +12,8 @@
 #include <algorithm>
 #include <stack>
 #include "my_algo.cpp"
+#include <list>
+#include<cmath>
 using namespace std;
 
 
@@ -200,16 +202,218 @@ int repeatedNTimes(vector<int>& nums) {
     }
     return res;
 }
+int largestPerimeter(vector<int>& nums) {
+    int n = nums.size();
+    sort(nums.begin(), nums.end());
+    for (int i = n - 3; i >= 0; i--) {
+        if (nums[i] + nums[i + 1] > nums[i + 2]) {
+            return nums[i] + nums[i + 1] + nums[i + 2];
+        }
+    }
 
+    return 0;
+}
+
+vector<int> sortedSquares(vector<int>& nums) {
+    int n = nums.size();
+
+    vector<int> res;
+    int i = 0;
+    int j = n - 1;
+    while (i <= j)
+    {
+        int a = nums[i] * nums[i];
+        int b = nums[j] * nums[j];
+        if (a > b) {
+            res.push_back(a);
+            i++;
+        }
+        else {
+
+            res.push_back(b);
+            j--;
+        }
+
+    }
+    i = 0, j = n - 1;
+    while (i < j) {
+        res[i] = res[i] ^ res[j];
+        res[j] = res[i] ^ res[j];
+        res[i] = res[i] ^ res[j];
+        i++;j--;
+    }
+    return res;
+}
+vector<int> addToArrayForm(vector<int>& num, int k) {
+    int n = num.size();
+    int rem = k;
+    vector<int> res;
+    for (int i = n - 1; i >= 0; i--)
+    {
+        int l = rem % 10;
+        rem = rem / 10;
+        int sum = l + num[i];
+        res.push_back(sum % 10);
+        rem = rem + (sum / 10);
+    }
+    while (rem > 0) {
+
+        res.push_back(rem % 10);
+        rem /= 10;
+    }
+
+    int i = 0;int j = res.size() - 1;
+    while (i < j)
+    {
+        res[i] = res[i] ^ res[j];
+        res[j] = res[i] ^ res[j];
+        res[i] = res[i] ^ res[j];
+        i++, j--;
+    }
+    return res;
+
+}
+int findJudge(int n, vector<vector<int>>& trust) {
+    int m = trust.size();
+    if (m < 1)
+    {
+        if (n == 1) {
+            return 1;
+        }
+        else {
+            return -1;
+        }
+    }
+    vector<bool> p1(n + 1, false);
+    vector<int> pf2(n + 1, 0);
+    for (int i = 0; i < m; i++)
+    {
+        p1[trust[i][0]] = true;
+        pf2[trust[i][1]]++;
+    }
+    int res = -1;
+    for (int i = 0; i <= n; i++) {
+        if (p1[i] == false) {
+            if (pf2[i] == n - 1) {
+                res = i;
+            }
+        }
+    }
+    return res;
+
+}
+int numRookCaptures(vector<vector<char>>& board) {
+    // R B  p .;
+    int row = -1;
+    int col = -1;
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            if (board[i][j] == 'R') {
+                row = i;
+                col = j;
+                break;
+            }
+        }
+        if (row != -1 && col != -1)break;
+    }
+
+    int res = 0;
+    int i = row - 1;
+    while (i != -1)
+    {
+        if (board[i][col] == 'B') {
+            break;
+        }
+        else if (board[i][col] == 'p') {
+            res++;
+            break;
+        }
+        else {
+            i--;
+        }
+    }
+    i = row + 1;
+    while (i < 8)
+    {
+        if (board[i][col] == 'B') {
+            break;
+        }
+        else if (board[i][col] == 'p') {
+            res++;
+            break;
+        }
+        else {
+            i++;
+        }
+    }
+    i = col - 1;
+    while (i > -1)
+    {
+        if (board[row][i] == 'B') {
+            break;
+        }
+        else if (board[row][i] == 'p') {
+            res++;
+            break;
+        }
+        else {
+            i--;
+        }
+    }
+    i = col + 1;
+    while (i < 8)
+    {
+        if (board[row][i] == 'B') {
+            break;
+        }
+        else if (board[row][i] == 'p') {
+            res++;
+            break;
+        }
+        else {
+            i++;
+        }
+    }
+
+
+
+
+
+    return res;
+
+
+}
 int main()
 {
-
 #ifndef ONLINE_JUDGE
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
 #endif
-    vector<int> num = { 2,6,2,1};
-    cout << repeatedNTimes(num);
+    vector<vector<char>> num = { {'.','.','.','.','.','.','.','.'},
+                                 {'.','.','.','p','.','.','.','.'},
+                                 {'.','.','.','R','.','.','.','p'},
+                                 {'.','.','.','.','.','.','.','.'},
+                                 {'.','.','.','.','.','.','.','.'},
+                                 {'.','.','.','p','.','.','.','.'},
+                                 {'.','.','.','.','.','.','.','.'},
+                                 {'.','.','.','.','.','.','.','.' } };
+    cout << numRookCaptures(num) << endl;
+    num = { {'.','.','.','.','.','.','.','.'},
+            {'.','p','p','p','p','p','.','.'},
+            {'.','p','p','B','p','p','.','.'},
+            {'.','p','B','R','B','p','.','.'},
+            {'.','p','p','B','p','p','.','.'},
+            {'.','p','p','p','p','p','.','.'},
+            {'.','.','.','.','.','.','.','.'},
+            {'.','.','.','.','.','.','.','.'} };
+    cout << numRookCaptures(num) << endl;
+
+    num = { {'.','.','.','.','.','.','.','.'},{'.','.','.','p','.','.','.','.'},{'.','.','.','p','.','.','.','.'},{'p','p','.','R','.','p','B','.'},{'.','.','.','.','.','.','.','.'},{'.','.','.','B','.','.','.','.'},{'.','.','.','p','.','.','.','.'},{'.','.','.','.','.','.','.','.'} };
+    cout << numRookCaptures(num) << endl;
+    num = { {'.','.','.','.','.','.','.','.'},{'.','.','.','.','.','.','.','.'},{'.','.','.','.','.','.','.','.'},{'.','.','.','R','.','.','.','.'},{'.','.','.','.','.','.','.','.'},{'.','.','.','.','.','.','.','.'},{'.','.','.','.','.','.','.','.'},{'.','.','.','.','.','.','.','.'} };
+    cout << numRookCaptures(num) << endl;
     return 0;
 }
 // g++ mainCode.cpp -o mainCode && .\mainCode

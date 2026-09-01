@@ -24,8 +24,8 @@ void print2dVector(vector<vector<int>> matrix) {
     for (int i = 0; i < matrix.size(); i++)
     {
         printVectror(matrix[i]);
-        cout << endl;
     }
+    cout << endl;
 }
 struct PairHash {
     size_t operator()(const pair<int, int>& p) const {

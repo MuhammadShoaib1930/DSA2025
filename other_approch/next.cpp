@@ -385,35 +385,146 @@ int numRookCaptures(vector<vector<char>>& board) {
 
 
 }
+
+void checkFuntion(string word, vector<int>& alph) {
+    vector<int> wordAlph(26, 0);
+    for (auto&& i : word)
+    {
+        wordAlph[i - 'a']++;
+    }
+    for (int i = 0; i < 26; i++)
+    {
+        if (alph[i] > 0) {
+            while (alph[i] > wordAlph[i]) {
+                {
+                    alph[i]--;
+                }
+            }
+        }
+    }
+}
+vector<string> commonChars(vector<string>& words) {
+    vector<int> alph(26, 0);
+    for (auto&& c : words[0])
+    {
+        alph[c - 'a']++;
+    }
+    int n = words.size();
+    for (int i = 1; i < n; i++)
+    {
+        checkFuntion(words[i], alph);
+    }
+
+    vector<string> result;
+    for (auto&& ch : words[0])
+    {
+        while (alph[ch - 'a'] > 0)
+        {
+            result.push_back(string(1, ch));
+            alph[ch - 'a']--;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+    return result;
+
+}
+
+int largestSumAfterKNegations(vector<int>& nums, int k) {
+    int n = nums.size();
+    sort(nums.begin(), nums.end());
+    int i = 0;
+    while (i < n && nums[i] < 0 && k>0)
+    {
+        nums[i] = nums[i] * -1;
+        i++;
+        k--;
+    }
+    sort(nums.begin(), nums.end());
+    i = 0;
+    while (k > 0 && i < n)
+    {
+        if (nums[i] < 0) {
+            nums[i] = nums[i] * -1;
+        }
+        else {
+            if (k % 2 != 0) {
+                nums[i] = nums[i] * -1;
+            }
+            break;
+        }
+        i++;k--;
+    }
+
+    printVectror(nums);
+    int result = 0;
+    for (auto&& v : nums)
+    {
+        result = v + result;
+    }
+    return result;
+}
+vector<bool> prefixesDivBy5(vector<int>& nums) {
+    int n = nums.size();
+    int i = 1;
+    int prev = nums[0];
+    while (i < n)
+    {
+        nums[i] = ((prev << 1) | nums[i]) % 5;
+        prev = nums[i];
+        i++;
+    }
+    printVectror(nums);
+    vector<bool> result;
+    for (auto&& v : nums) {
+        if (v % 5 == 0) {
+            result.push_back(true);
+        }
+        else {
+            result.push_back(false);
+
+        }
+    }
+    return result;
+}
+bool isBoomerang(vector<vector<int>>& points) {
+    unordered_set<int> xPoints;
+    unordered_set<int> yPoints;
+    for (auto&& v : points)
+    {
+        if (xPoints.contains(v[0]) && yPoints.contains(v[1])) {
+            return false;
+        }
+        else {
+            xPoints.insert(v[0]);
+            xPoints.insert(v[1]);
+            xPoints.insert(v[0] + 1);
+            xPoints.insert(v[1] + 1);
+        }
+    }
+
+    return true;
+}
+void H(int n,char s , char h , char d) {
+    if (n == 0)return;
+    H(n - 1, s, d, h);
+    cout << s << "->" << d<<endl;
+    H(n - 1, h,s, d);
+}
 int main()
 {
 #ifndef ONLINE_JUDGE
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
 #endif
-    vector<vector<char>> num = { {'.','.','.','.','.','.','.','.'},
-                                 {'.','.','.','p','.','.','.','.'},
-                                 {'.','.','.','R','.','.','.','p'},
-                                 {'.','.','.','.','.','.','.','.'},
-                                 {'.','.','.','.','.','.','.','.'},
-                                 {'.','.','.','p','.','.','.','.'},
-                                 {'.','.','.','.','.','.','.','.'},
-                                 {'.','.','.','.','.','.','.','.' } };
-    cout << numRookCaptures(num) << endl;
-    num = { {'.','.','.','.','.','.','.','.'},
-            {'.','p','p','p','p','p','.','.'},
-            {'.','p','p','B','p','p','.','.'},
-            {'.','p','B','R','B','p','.','.'},
-            {'.','p','p','B','p','p','.','.'},
-            {'.','p','p','p','p','p','.','.'},
-            {'.','.','.','.','.','.','.','.'},
-            {'.','.','.','.','.','.','.','.'} };
-    cout << numRookCaptures(num) << endl;
-
-    num = { {'.','.','.','.','.','.','.','.'},{'.','.','.','p','.','.','.','.'},{'.','.','.','p','.','.','.','.'},{'p','p','.','R','.','p','B','.'},{'.','.','.','.','.','.','.','.'},{'.','.','.','B','.','.','.','.'},{'.','.','.','p','.','.','.','.'},{'.','.','.','.','.','.','.','.'} };
-    cout << numRookCaptures(num) << endl;
-    num = { {'.','.','.','.','.','.','.','.'},{'.','.','.','.','.','.','.','.'},{'.','.','.','.','.','.','.','.'},{'.','.','.','R','.','.','.','.'},{'.','.','.','.','.','.','.','.'},{'.','.','.','.','.','.','.','.'},{'.','.','.','.','.','.','.','.'},{'.','.','.','.','.','.','.','.'} };
-    cout << numRookCaptures(num) << endl;
-    return 0;
+    H(3, 'S', 'H', 'D');
 }
 // g++ mainCode.cpp -o mainCode && .\mainCode

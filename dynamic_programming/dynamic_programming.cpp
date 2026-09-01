@@ -1,6 +1,10 @@
 
 
-
+#include <type_traits>
+#include <iostream>
+#include <vector>
+#include <string>
+#include <sstream>
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -120,7 +124,7 @@ int pairFriendsMemoization(int n) {
 
 int pairFriendsTabulation(int n) {
     if (n < 3)return n;
-    vector<int> dp = vector<int>(n , -1);
+    vector<int> dp = vector<int>(n, -1);
     dp[0] = 1, dp[1] = 2;
     for (int i = 2; i < n; i++)
     {
@@ -128,8 +132,115 @@ int pairFriendsTabulation(int n) {
         dp[i] = dp[i - 1] + (i)*dp[i - 2];
     }
 
-    return dp[n-1];
+    return dp[n - 1];
 
+}
+
+
+
+template <typename T>
+vector<T> inputVector()
+{
+    string line;
+    getline(cin, line);
+
+    stringstream ss(line);
+
+    vector<T> result;
+    T value;
+
+    while (ss >> value)
+    {
+        result.push_back(value);
+    }
+
+    return result;
+}
+
+struct ListNode {
+    int val;
+    ListNode* next;
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode* next) : val(x), next(next) {}
+
+};
+ListNode* inputListNode(vector<int> input) {
+    ListNode* head = NULL;
+    for (auto&& i : input)
+    {
+        if (head == NULL) {
+            head = new ListNode(i);
+        }
+        else {
+            ListNode* t = head;
+            while (t->next != NULL)
+            {
+                t = t->next;
+            }
+            t->next = new ListNode(i);
+        }
+    }
+    return head;
+}
+
+
+void removePart(ListNode* head, int val) {
+    if (head == NULL) {
+        return;
+    }
+
+    if (head->next != NULL && head->next->val == val) {
+        head->next = head->next->next;
+        removePart(head, val);
+    }
+    else {
+        removePart(head->next, val);
+
+    }
+}
+ListNode* removeElements(ListNode* head, int val) {
+    if (head == NULL)return head;
+    removePart(head, val);
+    if (head->val == val) {
+        head = head->next;
+    }
+    return head;
+}
+ListNode* reversHelper(ListNode* p, ListNode* c) {
+    if (c->next == NULL) {
+        c->next = p;
+        return c;
+    }
+    ListNode* n = c->next;
+    c->next = p;
+    return reversHelper(c, n);
+}
+ListNode* reverseList(ListNode* head) {
+    if (head == NULL)return head;
+    if (head->next == NULL) {
+        return head;
+    }
+    ListNode* c = head->next;
+    ListNode* p = head;
+    p->next = NULL;
+    ListNode* h = reversHelper(p, c);
+    return h;
+}
+
+bool powerPart(int n, long unsigned int p = 1) {
+    if (n == p)return true;
+    if (n < p)return false;
+    return powerPart(n, p * 2);
+}
+bool isPowerOfTwo(int n) {
+    if (n <= 0) {
+        return false;
+    }
+    return powerPart(n);
+}
+bool isPowerOfTwoMath(int n) {
+    return (n > 0 && (n & (n - 1) == 0));
 }
 
 int main() {
@@ -137,12 +248,7 @@ int main() {
     freopen("output.txt", "w", stdout);
 
 
-    cout << pairFriendsTabulation(0) << endl;
-    cout << pairFriendsTabulation(1) << endl;
-    cout << pairFriendsTabulation(2) << endl;
-    cout << pairFriendsTabulation(3) << endl;
-    cout << pairFriendsTabulation(4) << endl;
-    cout << pairFriendsTabulation(5) << endl;
+
 
     return 0;
 }

@@ -6,7 +6,11 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include<set>
+#include <queue>
+#include <algorithm>
 #include <vector>
+#include "my_algo.cpp"
 using namespace std;
 int fibonacciRecursion(int n) {
 
@@ -138,51 +142,7 @@ int pairFriendsTabulation(int n) {
 
 
 
-template <typename T>
-vector<T> inputVector()
-{
-    string line;
-    getline(cin, line);
 
-    stringstream ss(line);
-
-    vector<T> result;
-    T value;
-
-    while (ss >> value)
-    {
-        result.push_back(value);
-    }
-
-    return result;
-}
-
-struct ListNode {
-    int val;
-    ListNode* next;
-    ListNode() : val(0), next(nullptr) {}
-    ListNode(int x) : val(x), next(nullptr) {}
-    ListNode(int x, ListNode* next) : val(x), next(next) {}
-
-};
-ListNode* inputListNode(vector<int> input) {
-    ListNode* head = NULL;
-    for (auto&& i : input)
-    {
-        if (head == NULL) {
-            head = new ListNode(i);
-        }
-        else {
-            ListNode* t = head;
-            while (t->next != NULL)
-            {
-                t = t->next;
-            }
-            t->next = new ListNode(i);
-        }
-    }
-    return head;
-}
 
 
 void removePart(ListNode* head, int val) {
@@ -243,9 +203,151 @@ bool isPowerOfTwoMath(int n) {
     return (n > 0 && (n & (n - 1) == 0));
 }
 
+
+ListNode* reversNode(ListNode* p, ListNode* c) {
+    if (c->next == NULL) {
+        c->next = p;
+        return c;
+    }
+    ListNode* n = c->next;
+    c->next = p;
+    return reversNode(c, n);
+}
+ListNode* midPointer(ListNode* s, ListNode* f) {
+    if (f == NULL) return s;
+    if (f->next == NULL) return s->next;
+    return midPointer(s->next, f->next->next);
+}
+bool plandormPart(ListNode* f, ListNode* m) {
+    if (f->next == NULL || m->next == NULL)        return (f->val == m->val);
+    return (f->val == m->val) ? plandormPart(f->next, m->next) : false;
+}
+bool isPalindrome(ListNode* head) {
+    if (head == NULL)return false;
+    if (head->next == NULL)return true;
+    return plandormPart(head, reversNode(NULL, midPointer(head, head)));
+}
+
+bool isPowerOfThree(int n) {
+    if (n < 1)return false;
+    if (n == 1)return true;
+    return (n % 3 == 0) ? isPowerOfThree(n / 3) : false;
+}
+bool isPowerOfFour(int n) {
+    if (n < 0)return false;
+    if (n == 1)return true;
+    return (n % 4 == 0) ? isPowerOfFour(n / 4) : false;
+}
+//Note Recursion
+int fib(int n) {
+    if (n <= 1) return n;
+    return fib(n - 1) + fib(n - 2);
+}
+//Note Memoiazation
+
+int fibPart(int n, vector<int> dp) {
+    if (n <= 1)return n;
+    if (dp[n] != -1)return dp[n];
+    int s1 = fibPart(n - 1, dp);
+    int s2 = fibPart(n - 2, dp);
+    dp[n] = s1 + s2;
+    return dp[n];
+
+}
+int fibm(int n) {
+    vector<int> dp = vector<int>(n + 1, -1);
+    return fibPart(n, dp);
+}
+// Note tabulation
+int fibt(int n) {
+    if (n <= 1)return n;
+    vector<int> dp = vector<int>(n + 1, -1);
+    dp[0] = 0;
+    dp[1] = 1;
+    for (int i = 2; i <= n; i++)
+    {
+        dp[i] = dp[i - 1] + dp[i - 2];
+    }
+    return dp[n];
+}
+
+char kthCharacter(int k, string word = "a") {
+    int n = word.size();
+    if (n >= k) {
+        return word[k - 1];
+    }
+    for (int i = 0; i < n; i++)
+    {
+        word += char(word[i] + 1);
+    }
+    return kthCharacter(k, word);
+}
+
+
+void partfindEvenNumber(vector<int>& digit, set<int>& result, int count, int start = 0) {
+    if (count == 3) {
+
+        int sum = (digit[0] * 100) + (digit[1] * 10) + digit[2];
+        result.insert(sum);
+        return;
+    }
+
+
+    for (int i = start; i < digit.size(); i++)
+    {
+        swap(digit[i], digit[start]);
+        partfindEvenNumber(digit, result, count + 1, start + 1);
+        swap(digit[i], digit[start]);
+    }
+}
+vector<int> findEvenNumbers(vector<int>& digits) {
+
+    set<int> value;
+    partfindEvenNumber(digits, value, 0, 0);
+    vector<int> result;
+    for (auto&& i : value)
+    {
+        result.push_back(i);
+    }
+
+
+
+    return result;
+}
+void partTotalNumbers(vector<int>& digits, set<int>& result, int start = 0, int count = 0) {
+    if (count == 3) {
+        if (digits[0] != 0 && (digits[2] & 1) == 0) {
+            int value = (digits[0] * 100) + (digits[1] * 10) + digits[2];
+            result.insert(value);
+        }
+        return;
+    }
+
+    for (int i = start; i < digits.size(); i++)
+    {
+
+        swap(digits[i], digits[start]);
+        partTotalNumbers(digits, result, start + 1, count + 1);
+        swap(digits[i], digits[start]);
+    }
+
+}
+int totalNumbers(vector<int>& digits) {
+    set<int> result;
+    partTotalNumbers(digits, result);
+    return result.size();
+}
+
 int main() {
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
+    for (int i = 1; i < 16; i++)
+    {
+        cout << i << " " << lastRemaining(i) << endl;
+    }
+
+
+
 
 
 

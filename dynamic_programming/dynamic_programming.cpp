@@ -341,10 +341,7 @@ int totalNumbers(vector<int>& digits) {
 int main() {
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
-    for (int i = 1; i < 16; i++)
-    {
-        cout << i << " " << lastRemaining(i) << endl;
-    }
+
 
 
 
